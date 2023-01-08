@@ -1,6 +1,5 @@
 package step_definitions;
 
-
 import org.junit.Assert;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -13,103 +12,87 @@ import utils.Driver;
 import utils.TestDataReader;
 
 public class UserManagementSteps {
-
+	
 	craterLoginPage craterLogin = new craterLoginPage();
 	caterDashboardPage dashboard = new caterDashboardPage();
 	BrowserUtils utils = new BrowserUtils();
 	CraterCommonPage commonPage = new CraterCommonPage();
-
+	
+	
+	// valid login test
+	
 	@Given("user is on the login page")
 	public void user_is_on_the_login_page() {
-
-		Driver.getDriver().get(TestDataReader.getProperty("craterUrl"));
-		
-		
+	    Driver.getDriver().get(TestDataReader.getProperty("craterUrl"));
+	   
 	}
-
-	// Valid login test
-
+	
 	@When("user enters valid {string} and {string}")
-	public void user_enters_valid_and(String username, String password) {
-
-		utils.sendKeysWithActionClass(craterLogin.useremail, username);
-		utils.sendKeysWithActionClass(craterLogin.password, password);
-
+	public void user_enters_valid_and(String useremail, String password) {
+	   utils.sendKeysWithActionClass(craterLogin.useremail, useremail);
+	   utils.sendKeysWithActionClass(craterLogin.password, password);
 	}
 
-	@When("clicks on the loging button")
-	public void clicks_on_the_loging_button() {
-		craterLogin.loginButton.click();
+	@When("clicks on the login button")
+	public void clicks_on_the_login_button() {
+	   craterLogin.loginButton.click();
 	}
 
 	@Then("user should be on the dashboard page")
 	public void user_should_be_on_the_dashboard_page() {
-		// When need to wait until the element to be visible
-		// element : dashboard.amountDueText from craterDashboardPage
-		// utils coming from the BrwserUtils which we created an object at the top
 		utils.waitUntilElementVisible(dashboard.amountDueText);
-		// We need to verify the element is visible by using Assert
 		Assert.assertTrue(dashboard.amountDueText.isDisplayed());
-
 	}
-
+	
 	@Then("user quits the browser")
 	public void user_quits_the_browser() {
-		Driver.quitDriver();
+	   Driver.quitDriver();
 	}
-
-	// Invalid Login attempts
-	@When("user enters invalid useremail {string} and password {string}")
-	public void user_enters_invalid_and(String invalidusereamil, String invalidPassword) {
-		utils.sendKeysWithActionClass(craterLogin.useremail, invalidusereamil);
+	
+	
+	// invalid login steps
+	@When("user enters invalid {string} and {string}")
+	public void user_enters_invalid_and(String invalidUseremail, String invalidPassword) {
+		utils.sendKeysWithActionClass(craterLogin.useremail, invalidUseremail);
 		utils.sendKeysWithActionClass(craterLogin.password, invalidPassword);
-
 	}
 
 	@Then("an error message appears")
 	public void an_error_message_appears() {
-		// We can just verify that the login button means we still at the loging page
-		// Mean the we have unsuccessful login
-		Assert.assertTrue(craterLogin.loginButton.isDisplayed());
+	    utils.waitUntilElementVisible(craterLogin.ErrorMessageLogin);
+	    Assert.assertTrue(craterLogin.ErrorMessageLogin.isDisplayed());
 	}
 
 	@Then("user is not logged in")
 	public void user_is_not_logged_in() {
-
-		// we validate using the login button element which means user isn't able to
-		// login
-		// and we still at the login page
 		Assert.assertTrue(craterLogin.loginButton.isDisplayed());
-
+		Assert.assertTrue(Driver.getDriver().getCurrentUrl().contains("login"));
+		
 	}
 	
-
-		
-	//Invalid login scenario outline
-	boolean useremailEmpty; 
-	boolean passwordEmpty;
-	@When("user enters invalid useremail  {string} and password {string}")
-	public void user_enters_invalid_useremail_and_password(String invalidusereamil, String invalidPassword) {
-		
-		useremailEmpty = invalidusereamil.isBlank(); 
-		passwordEmpty = invalidPassword.isBlank(); 
-		utils.sendKeysWithActionClass(craterLogin.useremail, invalidusereamil);
+	
+	// invalid login scenario outline
+	boolean useremailEmpty;
+	boolean passwordEnpty;
+	@When("user enters invalid useremail {string} and password {string}")
+	public void user_enters_invalid_useremail_and_password(String invalidUseremail, String invalidPassword) {
+		useremailEmpty = invalidUseremail.isBlank();
+		passwordEnpty = invalidPassword.isBlank();
+				
+		utils.sendKeysWithActionClass(craterLogin.useremail, invalidUseremail);
 		utils.sendKeysWithActionClass(craterLogin.password, invalidPassword);
 	}
 	
-	@Then("error message appear")
-	public void error_message_appear() {
-	 
-		if (useremailEmpty || passwordEmpty ) {
-			utils.waitUntilElementVisible(craterLogin.fieldRequired); 
-			Assert.assertTrue(craterLogin.fieldRequired.isDisplayed());
-		}else {
-			utils.waitUntilElementVisible(craterLogin.loginButton);
-			Assert.assertTrue(craterLogin.loginButton.isDisplayed());
+	@Then("error messages appear")
+	public void error_messages_appear() {
+	    if (useremailEmpty || passwordEnpty) {
+	    	utils.waitUntilElementVisible(craterLogin.fieldRequired);
+		    Assert.assertTrue(craterLogin.fieldRequired.isDisplayed());
+		} else {
+			utils.waitUntilElementVisible(craterLogin.ErrorMessageLogin);
+			Assert.assertTrue(craterLogin.ErrorMessageLogin.isDisplayed());
 		}
 	}
-
-
-
+	
 
 }
