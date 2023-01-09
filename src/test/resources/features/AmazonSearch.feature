@@ -1,5 +1,3 @@
-
-@tag
 Feature: Amazon Search
   
 
@@ -10,8 +8,12 @@ Feature: Amazon Search
     When I enter the search term "<items>"
     And I click on the search button 
     Then I should see the search items "<items>" on the search results page 
+    And the page title should contain the searched item "<items>"
 
     Examples: 
-      | name  | value | 
-      | name1 |     5 | 
-      | name2 |     7 | 
+      | items         | 
+      | coffee mug    |
+      | Kitchen Knife |
+      | Towels        |
+      | Apron         |
+     
