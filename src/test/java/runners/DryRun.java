@@ -10,7 +10,7 @@ import io.cucumber.junit.CucumberOptions;
 		features="./src/test/resources/features", 
 		glue="step_definitions",
 		dryRun=true, //dryRun true means, cucumber runs the scenario steps that have not been implemented
-		tags="" 
+		tags=" @amazonSearchTests" 
 		)
 
 
